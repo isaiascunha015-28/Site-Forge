@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Forge — Prospecção & Sites</title>
+<style>
+:root{
+  --bg:#070a0f;--panel:#0d1118;--panel2:#111722;--line:#1d2633;
+  --text:#f4f7fb;--muted:#8d99aa;--accent:#7c5cff;--accent2:#5b8cff;
+  --success:#36d399;--danger:#ff5d73;--shadow:0 20px 60px rgba(0,0,0,.35)
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 70% -10%,#17203b 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit} button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:245px;border-right:1px solid var(--line);background:rgba(7,10,15,.86);padding:22px 14px;position:fixed;inset:0 auto 0 0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 10px 28px;font-weight:800;font-size:20px}.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#8b6cff,#4f8cff);display:grid;place-items:center;box-shadow:0 8px 25px #5c55ff33}.brand span{color:#fff}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:12px 13px;border-radius:10px;display:flex;gap:11px;align-items:center}.nav button:hover,.nav button.active{background:#151b26;color:#fff}.nav .ico{width:20px;text-align:center}
+.main{margin-left:245px;width:calc(100% - 245px);padding:28px 34px 60px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.eyebrow{font-size:12px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.12em}.title{font-size:28px;font-weight:800;margin:5px 0}.sub{color:var(--muted);font-size:14px}.avatar{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:#131923}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:linear-gradient(180deg,#111722,#0c1118);border:1px solid var(--line);border-radius:15px;padding:18px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;right:-25px;bottom:-35px;width:100px;height:100px;background:#795cff18;border-radius:50%;filter:blur(2px)}.metric .label{font-size:13px;color:var(--muted)}.metric .num{font-size:28px;font-weight:800;margin:10px 0 4px}.up{font-size:12px;color:var(--success)}
+.panel{background:linear-gradient(180deg,#0f141d,#0b1017);border:1px solid var(--line);border-radius:16px;padding:20px}.panel h2{font-size:17px;margin:0 0 5px}.panel p{margin:0;color:var(--muted);font-size:13px}.searchbox{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:18px}.input,.textarea,.select{width:100%;background:#090e15;border:1px solid #26303e;color:#fff;border-radius:10px;padding:12px 13px;outline:none}.input:focus,.textarea:focus{border-color:#695cff;box-shadow:0 0 0 3px #695cff14}.primary{border:0;color:#fff;background:linear-gradient(135deg,#7d5cff,#5b7cff);padding:12px 18px;border-radius:10px;font-weight:700;box-shadow:0 10px 25px #655cff22}.secondary{border:1px solid #293342;background:#121923;color:#fff;padding:10px 14px;border-radius:9px;font-weight:650}.danger{border:1px solid #4a2730;background:#1b1115;color:#ff8797;padding:9px 12px;border-radius:9px}
+.results{margin-top:18px;display:grid;gap:10px}.company{display:grid;grid-template-columns:1fr auto;align-items:center;gap:15px;padding:16px;border:1px solid var(--line);border-radius:12px;background:#0d131b}.company:hover{border-color:#364154}.company h3{margin:0 0 5px;font-size:15px}.meta{display:flex;flex-wrap:wrap;gap:9px;color:var(--muted);font-size:12px}.badge{padding:4px 7px;border-radius:6px;background:#14251f;color:#69e7ae}.actions{display:flex;gap:7px}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}.full{grid-column:1/-1}.textarea{min-height:115px;resize:vertical}.prompt{white-space:pre-wrap;line-height:1.65;color:#cdd5e1;background:#080d13;border:1px solid #202a37;border-radius:11px;padding:15px;min-height:300px;margin-top:15px;font-size:13px}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px;flex-wrap:wrap}
+.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed #283241;border-radius:12px}.toast{position:fixed;right:25px;bottom:25px;background:#151c27;border:1px solid #303b4b;padding:12px 15px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:50}.toast.show{display:block;animation:in .2s ease}@keyframes in{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.chart{height:160px;margin-top:18px;display:flex;align-items:end;gap:7px;padding:10px 0}.bar{flex:1;background:linear-gradient(180deg,#8065ff,#394a88);border-radius:5px 5px 2px 2px;min-height:8px;opacity:.9}.table{width:100%;border-collapse:collapse;margin-top:18px}.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}.table th{color:var(--muted);font-weight:600}.mobile{display:none}
+@media(max-width:900px){.sidebar{width:70px}.brand span,.nav button span:not(.ico){display:none}.brand{justify-content:center;padding-left:0;padding-right:0}.main{margin-left:70px;width:calc(100% - 70px);padding:20px}.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.searchbox{grid-template-columns:1fr}.mobile{display:block}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.top{align-items:flex-start}.actions{flex-direction:column}.company{grid-template-columns:1fr}}
+
+.niches{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.niche{border:1px solid #283342;background:#0b1017;color:#cbd4e0;border-radius:9px;padding:10px 13px;transition:.15s}.niche:hover,.niche.selected{background:#1a1530;border-color:#8066ff;color:#fff;box-shadow:0 0 0 2px #8066ff18}.location-note{font-size:12px;color:var(--muted);margin-top:8px}
+ 
+.metric-head{display:flex;justify-content:space-between;align-items:flex-start}.metric-current{font-size:25px;font-weight:800}.interactive-chart{height:240px;position:relative;margin-top:18px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0d141e,#090e15);cursor:crosshair}.interactive-chart svg{position:absolute;inset:0;width:100%;height:100%;color:#8066ff;z-index:2}.chart-grid{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#1d263333 48px);pointer-events:none}.chart-cursor{position:absolute;top:0;bottom:0;width:1px;background:#b7aaff;opacity:0;pointer-events:none;z-index:4}.chart-cursor span{position:absolute;top:50%;left:50%;width:9px;height:9px;transform:translate(-50%,-50%);border-radius:50%;background:#fff;box-shadow:0 0 0 4px #8066ff55}.chart-tooltip{position:absolute;top:12px;right:12px;background:#151c28;border:1px solid #303b4b;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;opacity:.9;z-index:5}.chart-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:7px}.interactive-chart:hover .chart-cursor{opacity:1}
+
+/* Login */
+#loginScreen{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:radial-gradient(circle at 50% -10%,#17203b 0,transparent 38%),#070a0f}
+.login-card{width:min(420px,calc(100% - 32px));background:linear-gradient(180deg,#111722,#0b1017);border:1px solid #26303e;border-radius:18px;padding:30px;box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.login-brand{display:flex;align-items:center;gap:11px;font-size:22px;font-weight:800;margin-bottom:26px}
+.login-logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#8b6cff,#4f8cff);display:grid;place-items:center}
+.login-card h1{font-size:24px;margin:0 0 7px}.login-card p{color:var(--muted);font-size:13px;margin:0 0 22px}
+.login-field{margin-bottom:13px}.login-field label{display:block;font-size:12px;color:#aeb8c7;margin-bottom:7px}
+.login-error{display:none;color:#ff8797;background:#1b1115;border:1px solid #4a2730;padding:10px;border-radius:9px;font-size:12px;margin-bottom:12px}
+.login-error.show{display:block}
+.login-submit{width:100%;margin-top:5px}
+.login-hint{margin-top:15px!important;text-align:center;font-size:11px!important}
+.map-panel{margin-top:16px}
+.map-wrap{height:380px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#090e15}
+.map-wrap iframe{width:100%;height:100%;border:0}
+.map-empty{height:100%;display:grid;place-items:center;text-align:center;padding:30px;color:var(--muted)}
+.logout{margin-top:auto!important;color:#ff8797!important}
+@media(max-width:600px){.login-card{padding:24px}.map-wrap{height:300px}}
+
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand"><div class="login-logo">S</div><span>Site Forge</span></div>
+    <h1>Acesso ao Site Forge</h1>
+    <p>Entre com seu e-mail e senha para acessar o painel.</p>
+    <div class="login-error" id="loginError">E-mail ou senha incorretos.</div>
+    <div class="login-field">
+      <label for="loginEmail">E-mail</label>
+      <input class="input" id="loginEmail" type="email" placeholder="seu@email.com" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label for="loginPassword">Senha</label>
+      <input class="input" id="loginPassword" type="password" placeholder="Digite sua senha" autocomplete="current-password">
+    </div>
+    <button class="primary login-submit" onclick="doLogin()">Entrar no painel →</button>
+    <p class="login-hint">Senha padrão: 12345</p>
+  </div>
+</div>
+
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">S</div><span>Site Forge</span></div>
+  <nav class="nav">
+    <button class="active" data-view="dashboard"><span class="ico">◈</span><span>Dashboard</span></button>
+    <button data-view="create"><span class="ico">✦</span><span>Criar site</span></button>
+    <button data-view="projects"><span class="ico">▣</span><span>Meus projetos</span></button>
+    <button data-view="help"><span class="ico">✧</span><span>Ajuda do Forge</span></button>
+    <button data-view="metrics"><span class="ico">◒</span><span>Métricas</span></button>
+  </nav>
+  <button class="nav logout" onclick="logout()"><span class="ico">↪</span><span>Sair</span></button>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div><div class="eyebrow">Workspace</div><div class="title" id="pageTitle">Dashboard</div><div class="sub">Encontre negócios e prepare propostas de sites.</div></div>
+  <div class="avatar">IC</div>
+</header>
+
+<section class="view active" id="dashboard">
+  <div class="grid">
+    <div class="metric"><div class="label">Lucro</div><div class="num">R$ 0</div><div class="up">0%</div></div>
+    <div class="metric"><div class="label">Visitas</div><div class="num">0</div><div class="up">0%</div></div>
+    <div class="metric"><div class="label">Sites criados</div><div class="num">0</div><div class="up">0 novos</div></div>
+    <div class="metric"><div class="label">Vendas</div><div class="num">0</div><div class="up">0%</div></div>
+  </div>
+  <div class="two">
+    <div class="panel">
+  <div class="metric-head"><div><h2>Desempenho</h2><p>Movimente o mouse sobre a métrica.</p></div><div class="metric-current" id="metricValue">0</div></div>
+  <div class="interactive-chart" id="interactiveChart">
+    <svg viewBox="0 0 900 260" preserveAspectRatio="none">
+      <defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-opacity=".35"/><stop offset="100%" stop-opacity="0"/></linearGradient></defs>
+      <path id="areaPath" d="M0 220 L900 220 L900 260 L0 260 Z" fill="url(#areaGradient)"></path>
+      <path id="linePath" d="M0 220 L900 220" fill="none" stroke="currentColor" stroke-width="3" vector-effect="non-scaling-stroke"></path>
+    </svg>
+    <div class="chart-grid"></div>
+    <div class="chart-cursor" id="chartCursor"><span></span></div>
+    <div class="chart-tooltip" id="chartTooltip">0</div>
+  </div>
+  <div class="chart-labels"><span>Hoje</span><span>Desempenho</span><span>Agora</span></div>
+</div>
+    <div class="panel"><h2>Comece uma prospecção</h2><p>Encontre empresas por nicho e região.</p><div style="margin-top:20px"><button class="primary" onclick="showView('create')">Nova prospecção →</button></div></div>
+  </div>
+  <div class="panel" style="margin-top:16px"><h2>Últimas empresas</h2><p>Empresas adicionadas recentemente.</p><table class="table"><thead><tr><th>Empresa</th><th>Nicho</th><th>Região</th><th>Status</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+</section>
+
+<section class="view" id="create">
+  <div class="panel">
+    <div class="eyebrow">01 · Nicho</div>
+    <h2 style="margin-top:6px">Escolha um nicho</h2>
+    <p>Selecione o segmento do negócio para personalizar o site.</p>
+    <div class="niches" id="niches"></div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <div class="eyebrow">02 · Dados do negócio</div>
+    <h2 style="margin-top:6px">Dados do negócio</h2>
+    <p>Preencha as informações que serão usadas pela IA para criar o prompt.</p>
+    <div class="formgrid">
+      <input class="input" id="gName" placeholder="Nome do negócio" oninput="updateMap()">
+      <div>
+        <select class="select" id="gCountry" onchange="updateLocation()">
+          <option value="">Escolha o país</option>
+          <option value="Brasil">Brasil</option>
+          <option value="Portugal">Portugal</option>
+          <option value="Estados Unidos">Estados Unidos</option>
+        </select>
+      </div>
+      <div>
+        <select class="select" id="gState" onchange="updateLocation()">
+          <option value="">Escolha o estado</option>
+          <option>Paraíba</option><option>Pernambuco</option><option>Rio Grande do Norte</option>
+          <option>Ceará</option><option>São Paulo</option><option>Rio de Janeiro</option>
+          <option>Minas Gerais</option><option>Bahia</option><option>Paraná</option>
+          <option>Santa Catarina</option><option>Rio Grande do Sul</option><option>Distrito Federal</option>
+        </select>
+      </div>
+      <input class="input" id="gRegion" placeholder="Cidade / região" oninput="updateLocation()">
+      <input class="input" id="gPhone" placeholder="WhatsApp">
+      <input class="input" id="gInstagram" placeholder="Instagram">
+      <textarea class="textarea full" id="gDesc" placeholder="Serviços / produtos principais"></textarea>
+      <textarea class="textarea full" id="gObjective" placeholder="Objetivo do site"></textarea>
+    </div>
+    <div class="toolbar">
+      <button class="secondary" onclick="clearGenerator()">Cancelar</button>
+      <button class="primary" onclick="generatePrompt()">Gerar prompt com IA →</button>
+    </div>
+  </div>
+
+
+  <div class="panel map-panel">
+    <div class="eyebrow">03 · Localização</div>
+    <h2 style="margin-top:6px">Google Maps</h2>
+    <p>O mapa acompanha automaticamente o país, estado e cidade/região escolhidos acima.</p>
+    <div class="map-wrap" id="mapContainer">
+      <div class="map-empty">Escolha uma cidade ou região para visualizar o mapa.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="promptPanel" style="margin-top:16px;display:none">
+    <div class="eyebrow">03 · IA</div>
+    <h2 style="margin-top:6px">Prompt criado pelo Forge</h2>
+    <p>A IA prepara um briefing completo para o ChatGPT gerar o site.</p>
+    <div class="prompt" id="promptBox">Seu prompt aparecerá aqui.</div>
+    <div class="toolbar">
+      <span class="sub">IA: ChatGPT</span>
+      <div style="display:flex;gap:8px">
+        <button class="secondary" onclick="copyPrompt()">Copiar prompt</button>
+        <button class="primary" onclick="openChatGPT()">Abrir ChatGPT ↗</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="projects">
+  <div class="panel"><h2>Meus projetos</h2><p>Projetos e empresas que você já preparou.</p></div>
+  <div class="results" id="savedCompanies"></div>
+</section>
+
+
+
+<section class="view" id="help">
+  <div class="panel">
+    <div class="eyebrow">Ajuda do Forge</div>
+    <h2 style="margin-top:6px">Como criar um site</h2>
+    <p style="margin-top:12px;line-height:1.8">
+      1. Escolha o nicho do negócio.<br>
+      2. Preencha os dados da empresa.<br>
+      3. Escolha país, estado e cidade/região.<br>
+      4. O Forge prepara um prompt com IA.<br>
+      5. Copie o prompt ou abra o ChatGPT para continuar a criação.
+    </p>
+  </div>
+</section>
+
+<section class="view" id="metrics">
+  <div class="grid">
+    <div class="metric"><div class="label">Lucro</div><div class="num">R$ 0</div><div class="up">0%</div></div>
+    <div class="metric"><div class="label">Visitas</div><div class="num">0</div><div class="up">0%</div></div>
+    <div class="metric"><div class="label">Sites criados</div><div class="num">0</div><div class="up">0 novos</div></div>
+    <div class="metric"><div class="label">Projetos</div><div class="num" id="projectCount">0</div><div class="up">0 em andamento</div></div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+  <div class="metric-head"><div><h2>Métrica interativa</h2><p>Passe o mouse para explorar a métrica.</p></div><div class="metric-current">0</div></div>
+  <div class="interactive-chart" id="interactiveChart2">
+    <svg viewBox="0 0 900 260" preserveAspectRatio="none">
+      <defs><linearGradient id="areaGradient2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-opacity=".35"/><stop offset="100%" stop-opacity="0"/></linearGradient></defs>
+      <path id="areaPath2" d="M0 220 L900 220 L900 260 L0 260 Z" fill="url(#areaGradient2)"></path>
+      <path id="linePath2" d="M0 220 L900 220" fill="none" stroke="currentColor" stroke-width="3" vector-effect="non-scaling-stroke"></path>
+    </svg>
+    <div class="chart-grid"></div><div class="chart-cursor" id="chartCursor2"><span></span></div><div class="chart-tooltip" id="chartTooltip2">0</div>
+  </div>
+</div>
+</section>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const niches = ["Advocacia","Arquitetura","Contabilidade","Clínica médica","Dentista","Psicologia","Restaurante","Lanchonete","Hamburgueria","Pizzaria","Barbearia","Salão de beleza","Loja de roupas","Loja de eletrônicos","Imobiliária","Corretor de imóveis","Oficina mecânica","Autoelétrica","Fotografia","Hotel","Pousada","Academia","Personal trainer","Escola","Curso","Agência de marketing","Pet shop","Veterinário","Floricultura","Construtora","Marcenaria","Eletricista","Encanador","Limpeza","Manutenção","Consultoria","Segurança","Turismo","Eventos","Buffet","Doceria","Padaria","Cafeteria","Sorveteria","Delivery","Mercado","Supermercado","Farmácia","Ótica","Joalheria","Móveis planejados","Design de interiores","Engenharia","Paisagismo","Transportadora","Logística","Despachante","Autoescola","Assistência técnica","Informática","Produtor rural","Outros"];
+let selectedNiche="";
+let saved=JSON.parse(localStorage.getItem("siteforge_saved")||"[]");
+
+function showView(id){
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ const target=document.getElementById(id); if(target) target.classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+ const titles={dashboard:"Dashboard",create:"Criar site",projects:"Meus projetos",help:"Ajuda do Forge",metrics:"Métricas"};
+ document.getElementById("pageTitle").textContent=titles[id]||"Site Forge";
+ if(id==="projects") renderSaved();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showView(b.dataset.view));
+
+function initInteractiveChart(chartId,lineId,areaId,cursorId,tooltipId,valueId){
+ const box=document.getElementById(chartId), line=document.getElementById(lineId), area=document.getElementById(areaId);
+ const cursor=document.getElementById(cursorId), tip=document.getElementById(tooltipId);
+ if(!box)return;
+ box.addEventListener("mousemove",e=>{
+   const r=box.getBoundingClientRect(), x=Math.max(0,Math.min(r.width,e.clientX-r.left)), pct=x/r.width;
+   const value=0; const y=220;
+   const svgX=pct*900;
+   line.setAttribute("d",`M0 220 L${svgX} ${y} L900 220`);
+   area.setAttribute("d",`M0 220 L${svgX} ${y} L900 220 L900 260 L0 260 Z`);
+   cursor.style.left=x+"px"; cursor.style.top="0"; cursor.querySelector("span").style.top=(y/260*100)+"%";
+   tip.textContent=value; tip.style.left=Math.min(Math.max(x-30,8),r.width-70)+"px"; tip.style.right="auto";
+   if(valueId){document.getElementById(valueId).textContent=value;}
+ });
+ box.addEventListener("mouseleave",()=>{
+   cursor.style.opacity="0";
+   if(valueId)document.getElementById(valueId).textContent="0";
+   line.setAttribute("d","M0 220 L900 220"); area.setAttribute("d","M0 220 L900 220 L900 260 L0 260 Z");
+ });
+}
+function renderNiches(){
+ document.getElementById("niches").innerHTML=niches.map(n=>`<button class="niche ${selectedNiche===n?'selected':''}" onclick="selectNiche('${n.replace(/'/g,"\\'")}')">${n}</button>`).join("");
+}
+function selectNiche(n){selectedNiche=n;renderNiches();toast("Nicho selecionado: "+n)}
+
+
+/* Login */
+const LOGIN_KEY="siteforge_logged_in";
+function doLogin(){
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  const error=document.getElementById("loginError");
+  if(email && password==="12345"){
+    localStorage.setItem(LOGIN_KEY,"1");
+    document.getElementById("loginScreen").style.display="none";
+    error.classList.remove("show");
+  }else{
+    error.classList.add("show");
+  }
+}
+function logout(){
+  localStorage.removeItem(LOGIN_KEY);
+  document.getElementById("loginScreen").style.display="grid";
+}
+function initLogin(){
+  if(localStorage.getItem(LOGIN_KEY)==="1") document.getElementById("loginScreen").style.display="none";
+  ["loginEmail","loginPassword"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+}
+initLogin();
+
+/* Google Maps por cidade/região (sem API key: usa o mapa incorporado por busca). */
+function updateMap(){
+  const country=document.getElementById("gCountry")?.value.trim();
+  const state=document.getElementById("gState")?.value.trim();
+  const city=document.getElementById("gRegion")?.value.trim();
+  const name=document.getElementById("gName")?.value.trim();
+  const container=document.getElementById("mapContainer");
+  if(!container)return;
+  const query=[name,city,state,country].filter(Boolean).join(", ");
+  if(!query){
+    container.innerHTML='<div class="map-empty">Escolha uma cidade ou região para visualizar o mapa.</div>';
+    return;
+  }
+  const src="https://www.google.com/maps?q="+encodeURIComponent(query)+"&output=embed";
+  container.innerHTML='<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="'+src+'" title="Google Maps - '+query.replace(/"/g,"&quot;")+'"></iframe>';
+}
+
+function updateLocation(){
+ const country=document.getElementById("gCountry").value;
+ const state=document.getElementById("gState").value;
+ const city=document.getElementById("gRegion").value.trim();
+ if(country && (state||city)){
+   const query=[selectedNiche,city,state,country].filter(Boolean).join(", ");
+   document.getElementById("locationHint")?.remove();
+   const el=document.createElement("div");el.id="locationHint";el.className="location-note full";
+   el.textContent="Localização selecionada: "+query+" · pronta para buscar no Google Maps na versão com API.";
+   document.querySelector("#create .formgrid").appendChild(el);
+ }
+  updateMap();
+}
+function generatePrompt(){
+ const name=document.getElementById("gName").value.trim()||"Empresa";
+ const country=document.getElementById("gCountry").value||"Brasil";
+ const state=document.getElementById("gState").value||"não informado";
+ const region=document.getElementById("gRegion").value.trim()||"não informado";
+ const phone=document.getElementById("gPhone").value.trim()||"não informado";
+ const instagram=document.getElementById("gInstagram").value.trim()||"não informado";
+ const services=document.getElementById("gDesc").value.trim()||"não informado";
+ const objective=document.getElementById("gObjective").value.trim()||"apresentar a empresa e gerar novos contatos";
+ const niche=selectedNiche||"Outros";
+ const p=`Você é um especialista em criação de sites profissionais. Crie um site completo, moderno, responsivo e pronto para produção para o seguinte negócio:
+
+NEGÓCIO
+Nome: ${name}
+Nicho: ${niche}
+País: ${country}
+Estado: ${state}
+Cidade / região: ${region}
+WhatsApp: ${phone}
+Instagram: ${instagram}
+Serviços / produtos principais: ${services}
+Objetivo do site: ${objective}
+
+DIRETRIZES
+- Crie uma identidade visual profissional e personalizada para o nicho ${niche}.
+- O site deve funcionar perfeitamente em celular, tablet e desktop.
+- Crie uma primeira dobra forte, com título, descrição e CTA.
+- Inclua apresentação do negócio, serviços/produtos, diferenciais, prova social apenas se houver dados fornecidos, contato e rodapé.
+- Use textos naturais e específicos para ${name}; não use Lorem ipsum.
+- Destaque WhatsApp e Instagram quando fornecidos.
+- Não invente endereço, avaliações, preços ou informações que não foram fornecidas.
+- Use boas práticas de UX, acessibilidade, SEO e performance.
+- Entregue o código completo do site e deixe a estrutura fácil de editar.`;
+ document.getElementById("promptBox").textContent=p;
+ document.getElementById("promptPanel").style.display="block";
+ document.getElementById("promptPanel").scrollIntoView({behavior:"smooth",block:"start"});
+ saved.unshift({name,niche,region,phone,services});
+ saved=saved.filter((x,i,a)=>i===a.findIndex(y=>y.name===x.name));
+ localStorage.setItem("siteforge_saved",JSON.stringify(saved));
+ document.getElementById("projectCount").textContent=saved.length;
+ toast("Prompt criado com IA");
+}
+function copyPrompt(){
+ const t=document.getElementById("promptBox").textContent;
+ if(t==="Seu prompt aparecerá aqui.") return toast("Gere um prompt primeiro");
+ navigator.clipboard.writeText(t).then(()=>toast("Prompt copiado!")).catch(()=>toast("Não foi possível copiar automaticamente"));
+}
+function openChatGPT(){
+ const t=document.getElementById("promptBox").textContent;
+ if(t==="Seu prompt aparecerá aqui.") return toast("Gere um prompt primeiro");
+ window.open("https://chatgpt.com/","_blank");
+}
+function clearGenerator(){
+ ["gName","gCountry","gState","gRegion","gPhone","gInstagram","gDesc","gObjective"].forEach(id=>document.getElementById(id).value="");
+ selectedNiche="";renderNiches();
+ document.getElementById("promptPanel").style.display="none";
+ document.getElementById("locationHint")?.remove();
+}
+function renderSaved(){
+ const el=document.getElementById("savedCompanies");
+ el.innerHTML=saved.length?saved.map(c=>`<div class="company"><div><h3>${c.name}</h3><div class="meta"><span>${c.niche}</span><span>•</span><span>${c.region}</span><span>•</span><span>${c.phone||"sem WhatsApp"}</span></div></div><button class="secondary" onclick="showView('create')">Editar projeto</button></div>`).join(""):'<div class="empty">Nenhum projeto criado ainda.</div>';
+}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function initChart(id){const c=document.getElementById(id);if(c)c.innerHTML=[42,58,46,72,64,84,68,91,76,95,82,100].map(v=>`<div class="bar" style="height:${v}%"></div>`).join("")}
+renderNiches();updateMap();initInteractiveChart("interactiveChart","linePath","areaPath","chartCursor","chartTooltip","metricValue");
+initInteractiveChart("interactiveChart2","linePath2","areaPath2","chartCursor2","chartTooltip2",null);
+renderSaved();
+</script>
+</body>
+</html>
